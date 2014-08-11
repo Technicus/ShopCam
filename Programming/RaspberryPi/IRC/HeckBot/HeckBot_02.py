@@ -10,12 +10,13 @@ port = 6667
 irc = socket.socket ( socket.AF_INET, socket.SOCK_STREAM )
 irc.connect ( ( network, port ) )
 print irc.recv ( 4096 )
-irc.send ( 'NICK Spiriticus\r\n' )
-irc.send ( 'USER HeckBot HeckBot HeckBot :P HeckBotn IRC\r\n' )
+irc.send ( 'NICK somebodyelse112asdfasdf3\r\n' )
+irc.send ( 'USER HeckShopBot HHeckShopBott HeckShopBot :P HeckShopBotf IRC\r\n' )
 irc.send ( 'JOIN #benheckshopcam\r\n' )
 irc.send ( 'PRIVMSG #benheckshopcam :Hello.\r\n' )
 while True:
    data = irc.recv ( 4096 )
+   data.split('\r\n')
    if data.find ( 'PING' ) != -1:
       irc.send ( 'PONG ' + data.split() [ 1 ] + '\r\n' )
    elif data.find ( 'PRIVMSG' ) != -1:
