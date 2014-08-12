@@ -74,10 +74,15 @@ class ShopCam(callbacks.Plugin):
         """<byte>
         Sends a byte (an integer from 1 to 255) to the arduino."""
         # number = 0
+        if var < 128
+            pan = var
+        else:
+            tilt = var
         self.writeNumber(var)
         time.sleep(1)
         number = self.readNumber()
-        irc.reply('The Arduino answered: %d' % number)
+        irc.reply('You moved the camera %d' % var)
+        #irc.reply('The Arduino answered: %d' % number)
     move = wrap(move, ['int'])
     
     def up(self, irc, msg, args, var):
