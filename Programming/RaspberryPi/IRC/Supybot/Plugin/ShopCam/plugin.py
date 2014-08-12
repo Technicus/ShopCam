@@ -53,6 +53,11 @@ class ShopCam(callbacks.Plugin):
     bus = smbus.SMBus(1)
     # This is the address we setup in the Arduino Program
     address = 0x04
+    
+    pan = 0
+    tilt = 0
+    panCenter = 63
+    tiltCenter = 191
 
     def writeNumber(self, value):
         self.bus.write_byte(self.address, value)
