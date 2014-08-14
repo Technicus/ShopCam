@@ -25,7 +25,6 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
-
 ###
 
 import supybot.utils as utils
@@ -33,6 +32,7 @@ from supybot.commands import *
 import supybot.plugins as plugins
 import supybot.ircutils as ircutils
 import supybot.callbacks as callbacks
+import subprocess
 import smbus
 import time
 
@@ -69,6 +69,20 @@ class ShopCam(callbacks.Plugin):
     incrumentY = (90 / 4)
     incrumentX = (180 / 8)
     
+    benSolderX = 0
+    benSolderY = 0
+    benCodeX = 0
+    benCodeY = 0
+    felixX = 0
+    felixY = 0
+    laserX = 0
+    laserY = 0
+    routerX = 0
+    routerY = 0
+    whiteboardX = 0
+    whiteboardY = 0
+
+
     def mapRangeX(self, X0):
         if X0 < self.minX:
            X0 = self.minX
@@ -124,13 +138,13 @@ class ShopCam(callbacks.Plugin):
         HeckBot expects integers from -90 to 90."""
         X1 = self.mapRangeX(X0)
         Y1 = self.mapRangeY(Y0)
-        irc.reply('The result for X = ( %d )' %X1)
-        irc.reply('The result for Y = ( %d )' %Y1)
+        #irc.reply('The result for X = ( %d )' %X1)
+        #irc.reply('The result for Y = ( %d )' %Y1)
         self.writeNumber(X1)
         #time.sleep(1)
         self.writeNumber(Y1)
         #time.sleep(1)
-        irc.reply('You moved the camera to ( %d %d )' %(X1, Y1))
+        irc.reply('You moved the camera to ( %d %d )' %(X0, Y0))
         self.positionX = X0
         self.positionY = Y0
     move = wrap(move, ['int','int'])
@@ -139,9 +153,9 @@ class ShopCam(callbacks.Plugin):
         """< pan >
         HeckBot expects integers from -90 to 90."""
         X1 = self.mapRangeX(X0)
-        irc.reply('The result for X = ( %d )' %X1)
+        #irc.reply('The result for X = ( %d )' %X1)
         self.writeNumber(X1)
-        irc.reply('You panned the camera to ( %d )' %X1)
+        irc.reply('You panned the camera to ( %d )' %X0)
         self.positionX = X0
     pan = wrap(pan, ['int'])
     
@@ -149,9 +163,9 @@ class ShopCam(callbacks.Plugin):
         """< pan >
         HeckBot expects integers from -90 to 90."""
         Y1 = self.mapRangeY(Y0)
-        irc.reply('The result for Y = ( %d )' %Y1)
+        #irc.reply('The result for Y = ( %d )' %Y1)
         self.writeNumber(Y1)
-        irc.reply('You tilted the camera to ( %d )' %Y1)
+        irc.reply('You tilted the camera to ( %d )' %Y0)
         self.positionY = Y0
     tilt = wrap(tilt, ['int'])
 
@@ -234,6 +248,20 @@ class ShopCam(callbacks.Plugin):
            irc.reply('The camera is at its limit ( %d )' %self.positionX)
         irc.reply('The X position = ( %d )' %self.positionX)
     right = wrap(right, [optional('int')])
+    
+    def video(self, irc, msg, args, string):
+        """video stream < on/off >
+        manipulate the video"""
+        video,status = string.split( );
+        if status == 'on':
+            irc.reply('The video stream was turned ON')
+            subprocess.Popen(["sudo", "/etc/init.d/ShopCam", "start", "&"])
+            #subprocess.call(["ls"])
+        if status == 'off':
+            irc.reply('The video stream was turned OFF')
+            subprocess.Popen(["sudo", "/etc/init.d/ShopCam", "stop", "&"])
+    video = wrap(video, ['text'])
+
 
 Class = ShopCam
 
